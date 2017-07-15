@@ -1,3 +1,6 @@
 [Telegram]
 token = telegram-token
 connection = polling
+
+[Modules]
+ping = yes
