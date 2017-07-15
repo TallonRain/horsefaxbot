@@ -1,0 +1,3 @@
+[Telegram]
+token = telegram-token
+connection = polling
