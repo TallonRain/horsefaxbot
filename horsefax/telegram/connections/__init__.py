@@ -10,6 +10,7 @@ class TelegramConnection(ABC):
     def __init__(self, token: str, handler: MessageHandler):
         self.token = token
         self.handler = handler
+        self.session = requests.Session()
 
     def send(self, endpoint: str, message: dict, token: Optional[Any]=None) -> dict:
         return self.request(endpoint, json=message)
@@ -24,6 +25,6 @@ class TelegramConnection(ABC):
         pass
 
     def request(self, endpoint: str, **kwargs) -> dict:
-        result = requests.post(f"https://api.telegram.org/bot{self.token}/{endpoint}", **kwargs)
+        result = self.session.post(f"https://api.telegram.org/bot{self.token}/{endpoint}", **kwargs)
         result.raise_for_status()
         return result.json()['result']
