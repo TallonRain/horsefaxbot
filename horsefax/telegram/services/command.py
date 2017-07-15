@@ -9,7 +9,7 @@ class Command:
     def __init__(self, message: TextMessage, command: str, args: List[str]):
         self.message = message
         self.command = command
-        self.arts = args
+        self.args = args
 
 
 class CommandService(EventSourceMixin):
@@ -29,7 +29,7 @@ class CommandService(EventSourceMixin):
         parts = text.split()
         command = parts[0][1:]
         if '@' in command:
-            command, target = command.split('@', maxsplit=1)  # type: Tuple[str, str]
+            command, target = command.split('@', maxsplit=1)
             if target != self.telegram.user.username:
                 return
 
