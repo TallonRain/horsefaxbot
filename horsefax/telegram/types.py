@@ -31,7 +31,8 @@ class Message:
         self.sender = User(p['from'])
         self.date = _from_ts(p['date'])
         self.chat = Chat(p['chat'])
-        self.forward_from = _optional(Chat, p.get('forward_from'))
+        self.forward_from = _optional(User, p.get('forward_from'))
+        self.forward_from_chat = _optional(Chat, p.get('forward_from_chat'))
         self.forward_from_message_id = p.get('forward_from_message_id', None)  # type: Optional[int]
         self.forward_date = _optional(_from_ts, p.get('forward_date'))
         self.reply_to_message = _optional(Message, p.get('reply_to_message'))
@@ -100,7 +101,7 @@ class AudioMessage(FileMixin, Message):
 class DocumentMessage(FileMixin, Message):
     def __init__(self, p: Dict[str, Any]):
         super().__init__(p)
-        doc = p['doc']  # type: Dict[str, Any]
+        doc = p['document']  # type: Dict[str, Any]
         self.file_id = doc['file_id']
         self.thumbnail = _optional(PhotoSize, p.get('thumb'))
         self.caption = p.get('caption', None)  # type: Optional[str]

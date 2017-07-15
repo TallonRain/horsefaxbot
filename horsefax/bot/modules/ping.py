@@ -1,13 +1,12 @@
-from ..core import HorseFaxBot
+from ..core import HorseFaxBot, ModuleTools, BaseModule
 from horsefax.telegram.services.command import Command
-from horsefax.telegram.services.chat import ChatService
 
 
-class PingModule:
-    def __init__(self, bot: HorseFaxBot):
+class PingModule(BaseModule):
+    def __init__(self, bot: HorseFaxBot, util: ModuleTools):
         self.bot = bot
-        # TODO: Some way to undo this at the module level.
-        self.bot.commands.register_handler('ping', self.ping)
+        self.util = util
+        self.util.register_command('ping', self.ping)
 
     def ping(self, command: Command):
-        self.bot.chat.message(command.message.chat, "`Pong!`", parsing=ChatService.ParseMode.MARKDOWN)
+        self.bot.message(command.message.chat, "`Pong!`")

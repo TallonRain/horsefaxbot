@@ -4,3 +4,4 @@ _parser = ConfigParser()
 _parser.read('horsefax.conf')
 
 token = _parser['Telegram']['token']
+modules = _parser['Modules'].keys()
