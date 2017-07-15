@@ -74,7 +74,7 @@ class Message:
 class TextMessage(Message):
     def __init__(self, p: Dict[str, Any]):
         super().__init__(p)
-        self.text = p.get('text', None)  # type: Optional[str]
+        self.text = p['text']  # type: str
         self.entities = [TextEntity(x) for x in p.get('entities', [])]
 
     def __str__(self):
@@ -299,6 +299,7 @@ class TextEntity:
         self.length = properties['length']  # type: int
         self.url = properties.get('url')  # type: Optional[str]
         self.user = _optional(User, properties.get('user'))
+
 
 class User:
     def __init__(self, properties: Dict[str, Any]):
