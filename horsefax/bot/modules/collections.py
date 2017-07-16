@@ -3,7 +3,7 @@ from peewee import *
 
 from horsefax.telegram.services.command import Command
 
-from ..core import HorseFaxBot, ModuleTools, BaseModule
+from ..core import HorseFaxBot, ModuleTools, BaseModule, ChatService
 from ..db import BaseModel
 
 
@@ -48,7 +48,7 @@ class CollectionModule(BaseModule):
         except DoesNotExist:
             return "That collection is empty."
         else:
-            return cast(str, item.content)
+            self.bot.message(command.message.chat, cast(str, item.content), parsing=ChatService.ParseMode.NONE)
 
     def add_item(self, command: Command):
         if len(command.args) < 2:
