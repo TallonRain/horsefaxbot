@@ -6,6 +6,7 @@ from horsefax.telegram import Telegram
 from horsefax.telegram.types import *
 from horsefax.telegram.services.command import CommandService, Command
 from horsefax.telegram.services.chat import ChatService
+from .db import prepare_db
 
 import horsefax.bot.config as config
 
@@ -16,16 +17,21 @@ class HorseFaxBot:
         self.commands = CommandService(self.telegram)
         self.chat = ChatService(self.telegram)
         self.modules = {}
+        self._module_modules = {}
 
     def go(self):
-        self.telegram.connect()
+        self.prepare_modules()
+        prepare_db()
         self.load_modules()
+        self.telegram.connect()
+
+    def prepare_modules(self):
+        for module_name in config.modules:
+            self._module_modules[module_name] = importlib.import_module(f".modules.{module_name}", package='.'.join(__name__.split('.')[:-1]))
 
     def load_modules(self):
-        for module_name in config.modules:
-            module = importlib.import_module(f".modules.{module_name}", package='.'.join(__name__.split('.')[:-1]))
+        for module_name, module in self._module_modules.items():
             things = dir(module)
-            print(things)
             for thing in things:
                 thing = getattr(module, thing)
                 if isinstance(thing, type) and issubclass(thing, BaseModule) and thing != BaseModule:
@@ -43,12 +49,17 @@ class ModuleTools:
         self.bot = bot
         self.cs_handles = {}
 
-    def register_command(self, command: str, handler: Callable[[Command], None]):
+    def register_command(self, command: str, handler: Callable[[Command], Optional[str]]):
         if command in self.cs_handles:
             self.unregister_command(command)
-        handle = self.bot.commands.register_handler(command, handler)
+        handle = self.bot.commands.register_handler(command, lambda x: self.command_handler(handler, x))
         self.cs_handles[command] = handle
         return handle
+
+    def command_handler(self, handler, command: Command):
+        result = handler(command)
+        if result is not None:
+            self.bot.message(command.message.chat, result)
 
     def unregister_command(self, command: str):
         if command in self.cs_handles:

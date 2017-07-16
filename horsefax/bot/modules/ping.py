@@ -9,4 +9,4 @@ class PingModule(BaseModule):
         self.util.register_command('ping', self.ping)
 
     def ping(self, command: Command):
-        self.bot.message(command.message.chat, "`Pong!`")
+        return "`Pong!`"

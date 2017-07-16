@@ -5,3 +5,5 @@ _parser.read('horsefax.conf')
 
 token = _parser['Telegram']['token']
 modules = _parser['Modules'].keys()
+
+db_path = _parser['Database']['filename']

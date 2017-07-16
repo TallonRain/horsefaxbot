@@ -9,4 +9,4 @@ class CuteModule(BaseModule):
         self.util.register_command('cute', self.cute)
 
     def cute(self, command: Command):
-        self.bot.message(command.message.chat, "https://derpicdn.net/img/view/2012/1/2/0.jpg")
+        return "https://derpicdn.net/img/view/2012/1/2/0.jpg"
