@@ -27,7 +27,10 @@ class PingModule(BaseModule):
             return "`Syntax: /addalias <alias> <command>`"
         alias = command.args[0]
         alias_to = ' '.join(command.args[1:])
-        Alias(alias=alias, command=alias_to, added_by=command.message.sender.id).save()
+        try:
+            Alias(alias=alias, command=alias_to, added_by=command.message.sender.id).save()
+        except IntegrityError:
+            return "That alias already exists."
         self.util.register_command(alias, self.handle_alias)
         return f"Added alias `{alias}`."
 
