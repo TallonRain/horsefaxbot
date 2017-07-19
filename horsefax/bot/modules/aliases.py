@@ -33,6 +33,12 @@ class PingModule(BaseModule):
 
     def handle_alias(self, command: Command):
         alias = Alias.get(alias=command.command)
+        if not hasattr(command.message, 'alias_origin'):
+            command.message.alias_origin = []
+        if command.command in command.message.alias_origin:
+            return f"Detected command loop: `{' -> '.join(command.message.alias_origin)} -> {command.command}`"
+        command.message.alias_origin.append(command.command)
+
         new_message = copy.copy(command.message)
         new_message.text = "/" + alias.command
         if len(command.args) > 0:
