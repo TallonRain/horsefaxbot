@@ -4,3 +4,5 @@ connection = polling
 
 [Modules]
 ping = yes
+collections = yes
+derpibooru = yes
