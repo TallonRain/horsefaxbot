@@ -25,7 +25,8 @@ class CollectionModule(BaseModule):
         self.util = tools
         self.util.register_command("newcollection", self.add_collection)
         self.util.register_command("additem", self.add_item)
-        for collection in  Collection.select():
+        self.util.register_command("removeitem", self.remove_item)
+        for collection in Collection.select():
             self.util.register_command(collection.name, self.handle_command)
 
     def add_collection(self, command: Command):
@@ -52,7 +53,7 @@ class CollectionModule(BaseModule):
 
     def add_item(self, command: Command):
         if len(command.args) < 2:
-            return "Syntax `/additem <collection> <thing to add>`"
+            return "Syntax: `/additem <collection> <thing to add>`"
         collection_name = command.args[0]
         thing = ' '.join(command.args[1:])
         try:
@@ -63,3 +64,20 @@ class CollectionModule(BaseModule):
             item = CollectionItem(collection=collection, content=thing, added_by=command.message.sender.id)
             item.save()
             return f"Added. {collection.items.count()} items in `{collection.name}`."
+
+    def remove_item(self, command: Command):
+        if len(command.args) < 2:
+            return "Syntax: `/removeitem <collection> <thing to remove>`"
+        collection_name = command.args[0]
+        thing = ' '.join(command.args[1:])
+        try:
+            collection = Collection.get(name=collection_name)
+        except Collection.DoesNotExist:
+            return "That collection does not exist."
+        else:
+            try:
+                collection.items.filter(content=thing).get().delete_instance()
+            except DoesNotExist:
+                return "Couldn't find that item."
+            else:
+                return "Item removed."
