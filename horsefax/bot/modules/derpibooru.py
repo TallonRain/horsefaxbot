@@ -9,7 +9,6 @@ class PingModule(BaseModule):
         self.bot = bot
         self.util = util
         self.util.register_command('derpibooru', self.derp)
-        self.util.register_command('derpi', self.derp)
 
     def derp(self, command: Command):
         search = ' '.join(command.args)
