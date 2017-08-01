@@ -306,7 +306,7 @@ class User:
     def __init__(self, properties: Dict[str, Any]):
         self.id = properties['id']  # type: int
         self.first_name = properties['first_name']  # type: str
-        self.last_name = properties.get('last_name', '')  # type: str
+        self.last_name = properties.get('last_name', None)  # type: Optional[str]
         self.username = properties.get('username', None)  # type: Optional[str]
         self.language_code = properties.get('language_code', None)  # type: Optional[str]
 
