@@ -3,7 +3,7 @@ from peewee import *
 from peewee import BaseModel as PeeweeModelMetaclass
 
 
-db = SqliteDatabase(None)
+db = PostgresqlDatabase(None)
 
 _models = []
 
@@ -21,7 +21,6 @@ class BaseModel(Model, metaclass=RegisteringModelType):
 
 
 def prepare_db():
-    db.init(config.db_path)
+    db.init(config.db_name, **config.db_params)
     db.connect()
-    db.execute_sql("PRAGMA foreign_keys=ON")
     db.create_tables(_models, safe=True)

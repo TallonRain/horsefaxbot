@@ -2,7 +2,7 @@ from peewee import *
 from typing import Optional
 
 from ..core import HorseFaxBot, ModuleTools, BaseModule
-from ..db import BaseModel
+from ..db import BaseModel, db
 from horsefax.telegram.types import Message, User
 
 
@@ -33,7 +33,8 @@ class UsersModule(BaseModule):
                             first_name=origin.first_name, last_name=origin.last_name,
                             language_code=origin.language_code)
         try:
-            user.save(force_insert=True)
+            with db.atomic():
+                user.save(force_insert=True)
         except IntegrityError:
             user.save(force_insert=False)
 

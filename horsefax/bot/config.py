@@ -1,9 +1,14 @@
-from configparser import ConfigParser
+from os import environ as _env
+import urllib.parse
+token = _env['TELEGRAM_TOKEN']
+modules = _env['HORSEFAX_MODULES'].split(',')
 
-_parser = ConfigParser()
-_parser.read('horsefax.conf')
+db_url = urllib.parse.urlparse(_env['DATABASE_URL'])  # type: urllib.parse.ParseResult
 
-token = _parser['Telegram']['token']
-modules = _parser['Modules'].keys()
-
-db_path = _parser['Database']['filename']
+db_name = db_url.path[1:]
+db_params = {
+    'user': db_url.username,
+    'password': db_url.password,
+    'host': db_url.hostname,
+    'port': db_url.port,
+}
