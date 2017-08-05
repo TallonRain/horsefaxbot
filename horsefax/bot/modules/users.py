@@ -22,12 +22,12 @@ class TelegramUser(BaseModel):
 
 
 class UsersModule(BaseModule):
-    def __init__(self, bot: HorseFaxBot, util: ModuleTools):
+    def __init__(self, bot: HorseFaxBot, util: ModuleTools) -> None:
         self.bot = bot
         self.util = util
         self.bot.telegram.register_handler("message", self.handle_message)
 
-    def handle_message(self, message: Message):
+    def handle_message(self, message: Message) -> None:
         origin = message.sender
         user = TelegramUser(id=origin.id, username=origin.username,
                             first_name=origin.first_name, last_name=origin.last_name,

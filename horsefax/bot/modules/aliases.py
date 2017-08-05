@@ -16,7 +16,7 @@ class Alias(BaseModel):
 
 
 class PingModule(BaseModule):
-    def __init__(self, bot: HorseFaxBot, util: ModuleTools):
+    def __init__(self, bot: HorseFaxBot, util: ModuleTools) -> None:
         self.bot = bot
         self.util = util
         self.util.register_command('addalias', self.add_alias)
@@ -49,6 +49,7 @@ class PingModule(BaseModule):
         if len(command.args) > 0:
             new_message.text += ' ' + ' '.join(command.args)
         self.bot.commands.handle_message(new_message)
+        return None
 
     def remove_alias(self, command: Command) -> str:
         if len(command.args) < 1:

@@ -10,7 +10,7 @@ class ChatService:
         MARKDOWN = 'Markdown'
         HTML = 'HTML'
 
-    def __init__(self, telegram: Telegram):
+    def __init__(self, telegram: Telegram) -> None:
         self.telegram = telegram
 
     def message(self, target: Union[Chat, User, int], message: str, parsing: ParseMode=ParseMode.NONE,

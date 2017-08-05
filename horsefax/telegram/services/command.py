@@ -6,14 +6,14 @@ from ..types import Message, TextMessage
 
 
 class Command:
-    def __init__(self, message: TextMessage, command: str, args: List[str]):
+    def __init__(self, message: TextMessage, command: str, args: List[str]) -> None:
         self.message = message
         self.command = command
         self.args = args
 
 
 class CommandService(EventSourceMixin):
-    def __init__(self, telegram: Telegram):
+    def __init__(self, telegram: Telegram) -> None:
         super().__init__()
         self.telegram = telegram
         self.telegram.register_handler("message", self.handle_message)

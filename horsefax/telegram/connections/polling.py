@@ -6,7 +6,7 @@ from . import TelegramConnection, MessageHandler
 
 
 class LongPollingConnection(TelegramConnection):
-    def __init__(self, token: str, handler: MessageHandler):
+    def __init__(self, token: str, handler: MessageHandler) -> None:
         super().__init__(token, handler)
         self._connected = False
         self.latest_update = 0

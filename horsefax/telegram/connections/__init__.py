@@ -3,16 +3,16 @@ import requests
 from typing import Optional, Any, Callable
 
 
-MessageHandler = Callable[[dict, str], None]
+MessageHandler = Callable[[dict], None]
 
 
 class TelegramConnection(ABC):
-    def __init__(self, token: str, handler: MessageHandler):
+    def __init__(self, token: str, handler: MessageHandler) -> None:
         self.token = token
         self.handler = handler
         self.session = requests.Session()
 
-    def send(self, endpoint: str, message: dict, token: Optional[Any]=None) -> dict:
+    def send(self, endpoint: str, message: dict) -> dict:
         return self.request(endpoint, json=message)
 
     @abstractmethod

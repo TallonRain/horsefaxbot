@@ -9,7 +9,7 @@ _models = []
 
 
 class RegisteringModelType(PeeweeModelMetaclass):
-    def __init__(cls, name, bases, dct):
+    def __init__(cls, name, bases, dct) -> None:
         super().__init__(name, bases, dct)
         if name != 'BaseModel':
             _models.append(cls)

@@ -6,7 +6,7 @@ from .types import *
 
 
 class Telegram(EventSourceMixin):
-    def __init__(self, token: str, connection: Type[TelegramConnection]):
+    def __init__(self, token: str, connection: Type[TelegramConnection]) -> None:
         self.token = token
         self.connection = connection(token, self._handle_message)
         self.user = None  # type: Optional[User]
@@ -20,7 +20,7 @@ class Telegram(EventSourceMixin):
     def connected(self):
         return self.connection.connected
 
-    def _handle_message(self, update: Dict[str, Any]):
+    def _handle_message(self, update: Dict[str, Any]) -> None:
         self._broadcast_event("update", update)
         if 'message' in update:
             self._broadcast_event("message", Message.from_update(update['message']))

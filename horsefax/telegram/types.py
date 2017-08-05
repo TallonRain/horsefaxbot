@@ -14,9 +14,9 @@ T = TypeVar('T')
 S = TypeVar('S')
 
 
-def _optional(constructor: Callable[[S], T], value: Optional[S], **kwargs) -> Optional[T]:
+def _optional(constructor: Callable[[S], T], value: Optional[S]) -> Optional[T]:
     if value:
-        return constructor(value, **kwargs)
+        return constructor(value)
     else:
         return None
 
@@ -26,7 +26,7 @@ def _from_ts(t: float) -> datetime.datetime:
 
 
 class Message:
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         self.message_id = p['message_id']  # type: int
         self.sender = User(p['from'])
         self.date = _from_ts(p['date'])
@@ -73,12 +73,12 @@ class Message:
 
 
 class TextMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.text = p['text']  # type: str
         self.entities = [TextEntity(x) for x in p.get('entities', [])]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.sender.first_name}: {self.text}"
 
 
@@ -87,7 +87,7 @@ class FileMixin:
 
 
 class AudioMessage(FileMixin, Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         audio = p['audio']  # type: Dict[str, Any]
         self.file_id = audio['file_id']  # type: str
@@ -99,7 +99,7 @@ class AudioMessage(FileMixin, Message):
 
 
 class DocumentMessage(FileMixin, Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         doc = p['document']  # type: Dict[str, Any]
         self.file_id = doc['file_id']
@@ -111,7 +111,7 @@ class DocumentMessage(FileMixin, Message):
 
 
 class GameMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         game = p['game']  # type: Dict[str, Any]
         self.title = game['title']  # type: str
@@ -123,14 +123,14 @@ class GameMessage(Message):
 
 
 class PhotoMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.photo = [PhotoSize(x) for x in p['photo']]
         self.caption = p.get('caption', None)  # type: Optional[str]
 
 
 class StickerMessage(FileMixin, Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         sticker = p['sticker']  # type: Dict[str, Any]
         self.file_id = sticker['file_id']  # type: str
@@ -142,7 +142,7 @@ class StickerMessage(FileMixin, Message):
 
 
 class VideoMessage(FileMixin, Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         video = p['video']  # type: Dict[str, Any]
         self.caption = p.get('caption', None)  # type: Dict[str, Any]
@@ -156,7 +156,7 @@ class VideoMessage(FileMixin, Message):
 
 
 class VideoNoteMessage(FileMixin, Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         video = p['video_note']  # type: Dict[str, Any]
         self.file_id = video['file_id']  # type: str
@@ -167,25 +167,25 @@ class VideoNoteMessage(FileMixin, Message):
 
 
 class UsersJoinedMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.users = [User(x) for x in p['new_chat_members']]
 
 
 class UserLeftMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.user = User(p['left_chat_member'])
 
 
 class NewChatTitleMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.title = p['new_chat_title']  # type: str
 
 
 class NewChatPhotoMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.photo = [PhotoSize(x) for x in p['new_chat_photo']]
 
@@ -207,25 +207,25 @@ class ChannelChatCreatedMessage(Message):
 
 
 class ChatMigrateToIDMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.id = p['migrate_to_chat_id']  # type: int
 
 
 class ChatMigrateFromIDMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.id = p['migrate_from_chat_id']  # type: int
 
 
 class MessagePinnedMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         self.message = Message(p['pinned_message'])
 
 
 class InvoiceMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         invoice = p['invoice']  # type: Dict[str, Any]
         self.title = invoice['title']  # type: str
@@ -243,7 +243,7 @@ def _one_user_joined_message(message: Dict[str, Any]) -> UsersJoinedMessage:
 
 
 class ContactMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         contact = p['contact']  # type: Dict[str, Any]
         self.phone_number = contact['phone_number']  # type: str
@@ -253,7 +253,7 @@ class ContactMessage(Message):
 
 
 class LocationMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         location = p['location']  # type: Dict[str, Any]
         self.longitude = location['longitude']  # type: int
@@ -261,7 +261,7 @@ class LocationMessage(Message):
 
 
 class VenueMessage(Message):
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         super().__init__(p)
         venue = p['venue']
         location = venue['location']  # type: Dict[str, Any]
@@ -273,7 +273,7 @@ class VenueMessage(Message):
 
 
 class PhotoSize:
-    def __init__(self, p: Dict[str, Any]):
+    def __init__(self, p: Dict[str, Any]) -> None:
         self.file_id = p['file_id']  # type: str
         self.width = p['width']  # type: int
         self.height = p['height']  # type: int
@@ -294,7 +294,7 @@ class TextEntity:
         TEXT_LINK = 'text_link'
         TEXT_MENTION = 'text_mention'
 
-    def __init__(self, properties: Dict[str, Any]):
+    def __init__(self, properties: Dict[str, Any]) -> None:
         self.type = self.Type(properties['type'])
         self.offset = properties['offset']  # type: int
         self.length = properties['length']  # type: int
@@ -303,7 +303,7 @@ class TextEntity:
 
 
 class User:
-    def __init__(self, properties: Dict[str, Any]):
+    def __init__(self, properties: Dict[str, Any]) -> None:
         self.id = properties['id']  # type: int
         self.first_name = properties['first_name']  # type: str
         self.last_name = properties.get('last_name', None)  # type: Optional[str]
@@ -318,7 +318,7 @@ class Chat:
         SUPERGROUP = 'supergroup'
         CHANNEL = 'channel'
 
-    def __init__(self, properties: Dict[str, Any]):
+    def __init__(self, properties: Dict[str, Any]) -> None:
         self.id = properties['id']  # type: int
         self.type = self.Type(properties['type'])
         self.title = properties.get('title', None)  # type: Optional[str]

@@ -20,7 +20,7 @@ class CollectionItem(BaseModel):
 
 
 class CollectionModule(BaseModule):
-    def __init__(self, bot: HorseFaxBot, tools: ModuleTools):
+    def __init__(self, bot: HorseFaxBot, tools: ModuleTools) -> None:
         self.bot = bot
         self.util = tools
         self.util.register_command("newcollection", self.add_collection)

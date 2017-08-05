@@ -5,7 +5,7 @@ from horsefax.telegram.services.command import Command
 
 
 class PingModule(BaseModule):
-    def __init__(self, bot: HorseFaxBot, util: ModuleTools):
+    def __init__(self, bot: HorseFaxBot, util: ModuleTools) -> None:
         self.bot = bot
         self.util = util
         self.util.register_command('derpibooru', self.derp)

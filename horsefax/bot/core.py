@@ -1,5 +1,5 @@
 import importlib
-from typing import Union, Optional, List, cast, Callable, Any
+from typing import Union, Optional, Dict, List, cast, Callable, Any
 
 from horsefax.telegram.connections.polling import LongPollingConnection
 from horsefax.telegram import Telegram
@@ -12,12 +12,12 @@ import horsefax.bot.config as config
 
 
 class HorseFaxBot:
-    def __init__(self):
+    def __init__(self) -> None:
         self.telegram = Telegram(config.token, LongPollingConnection)
         self.commands = CommandService(self.telegram)
         self.chat = ChatService(self.telegram)
-        self.modules = {}
-        self._module_modules = {}
+        self.modules = {}  # type: Dict[str, BaseModule]
+        self._module_modules = {}  # type: Dict[str, Any]
 
     def go(self):
         self.prepare_modules()
@@ -45,9 +45,9 @@ class HorseFaxBot:
 
 
 class ModuleTools:
-    def __init__(self, bot: HorseFaxBot):
+    def __init__(self, bot: HorseFaxBot) -> None:
         self.bot = bot
-        self.cs_handles = {}
+        self.cs_handles = {}  # type: Dict[str, Any]
 
     def register_command(self, command: str, handler: Callable[[Command], Optional[str]]):
         if command in self.cs_handles:
@@ -56,17 +56,17 @@ class ModuleTools:
         self.cs_handles[command] = handle
         return handle
 
-    def command_handler(self, handler, command: Command):
+    def command_handler(self, handler, command: Command) -> None:
         result = handler(command)
         if result is not None:
             self.bot.message(command.message.chat, result)
 
-    def unregister_command(self, command: str):
+    def unregister_command(self, command: str) -> None:
         if command in self.cs_handles:
             self.bot.commands.unregister_handler(self.cs_handles[command])
         del self.cs_handles[command]
 
-    def unregister_all(self):
+    def unregister_all(self) -> None:
         for handle in self.cs_handles.values():
             self.bot.commands.unregister_handler(handle)
         self.cs_handles.clear()
