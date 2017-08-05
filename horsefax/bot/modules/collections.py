@@ -4,7 +4,7 @@ from peewee import *
 from horsefax.telegram.services.command import Command
 
 from ..core import HorseFaxBot, ModuleTools, BaseModule, ChatService
-from ..db import BaseModel
+from ..db import BaseModel, db_random_fn
 
 
 class Collection(BaseModel):
@@ -45,7 +45,7 @@ class CollectionModule(BaseModule):
         collection_name = command.command
         collection = Collection.get(name=collection_name)
         try:
-            item = collection.items.order_by(fn.Random()).get()
+            item = collection.items.order_by(db_random_fn).get()
         except DoesNotExist:
             return "That collection is empty."
         else:

@@ -22,3 +22,5 @@ class BaseModel(Model, metaclass=RegisteringModelType):
 
 def prepare_db():
     db.create_tables(_models, safe=True)
+
+db_random_fn = fn.Rand if isinstance(db, MySQLDatabase) else fn.Random
