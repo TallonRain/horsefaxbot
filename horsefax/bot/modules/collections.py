@@ -45,7 +45,7 @@ class CollectionModule(BaseModule):
         collection_name = command.command
         collection = Collection.get(name=collection_name)
         try:
-            item = collection.items.order_by(db_random_fn).get()
+            item = collection.items.order_by(db_random_fn()).get()
         except DoesNotExist:
             return "That collection is empty."
         else:
