@@ -1,6 +1,7 @@
 import requests
 import threading
 import time
+import traceback
 
 from . import TelegramConnection, MessageHandler
 
@@ -36,4 +37,8 @@ class LongPollingConnection(TelegramConnection):
             for update in updates:
                 # doing this per message ensures that we don't drop messages if we crash out.
                 self.latest_update = update['update_id']
-                self.handler(update)
+                try:
+                    self.handler(update)
+                except Exception as e:
+                    print("Something went terribly wrong.")
+                    traceback.print_exc()
