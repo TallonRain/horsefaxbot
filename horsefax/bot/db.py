@@ -1,9 +1,9 @@
 import horsefax.bot.config as config
 from peewee import *
 from peewee import BaseModel as PeeweeModelMetaclass
+from playhouse.db_url import connect
 
-
-db = PostgresqlDatabase(None)
+db = connect(config.db_url)
 
 _models = []
 
@@ -21,6 +21,4 @@ class BaseModel(Model, metaclass=RegisteringModelType):
 
 
 def prepare_db():
-    db.init(config.db_name, **config.db_params)
-    db.connect()
     db.create_tables(_models, safe=True)
