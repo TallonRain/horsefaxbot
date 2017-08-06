@@ -29,16 +29,23 @@ class UsersModule(BaseModule):
         self.util = util
         self.bot.telegram.register_handler("message", self.handle_message)
 
-    @db_session
     def handle_message(self, message: Message) -> None:
         origin = message.sender
+        self.update_user(origin)
+        if message.forward_from and isinstance(message.forward_from, User):
+            self.update_user(message.forward_from)
+        if message.reply_to_message:
+            self.handle_message(message.reply_to_message)
+
+    @db_session
+    def update_user(self, user: User):
         try:
-            TelegramUser[origin.id].set(username=origin.username, first_name=origin.first_name,
-                                        last_name=origin.last_name, language_code=origin.language_code)
+            TelegramUser[user.id].set(username=user.username, first_name=user.first_name,
+                                      last_name=user.last_name, language_code=user.language_code)
         except ObjectNotFound:
-            TelegramUser(id=origin.id, username=origin.username,
-                         first_name=origin.first_name, last_name=origin.last_name,
-                         language_code=origin.language_code)
+            TelegramUser(id=user.id, username=user.username,
+                         first_name=user.first_name, last_name=user.last_name,
+                         language_code=user.language_code)
 
     @db_session
     def user_by_username(self, username: str) -> Optional[User]:
