@@ -1,5 +1,5 @@
 from pony.orm import *
-orm_Optional = Optional
+from pony import orm
 from typing import Optional
 
 
@@ -10,10 +10,10 @@ from horsefax.telegram.types import Message, User
 
 class TelegramUser(db.Entity):
     id = PrimaryKey(int)
-    username = orm_Optional(str, index=True)
+    username = orm.Optional(str, index=True)
     first_name = Required(str)
-    last_name = orm_Optional(str)
-    language_code = orm_Optional(str)
+    last_name = orm.Optional(str)
+    language_code = orm.Optional(str)
 
     def to_user(self):
         return User({'id': self.id,
