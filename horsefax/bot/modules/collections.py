@@ -15,7 +15,7 @@ class Collection(db.Entity):
 
 
 class CollectionItem(db.Entity):
-    collection = Required(Collection, index=True)
+    collection = Required(Collection)
     content = Required(str)
     added_by = Optional(int)
 
@@ -46,10 +46,10 @@ class CollectionModule(BaseModule):
     def handle_command(self, command: Command):
         collection_name = command.command
         collection = Collection.get(name=collection_name)
-        item = collection.items.random(1)
-        if not item:
+        items = collection.items.random(1)
+        if not items:
             return "That collection is empty."
-        self.bot.message(command.message.chat, cast(str, item.content), parsing=ChatService.ParseMode.NONE)
+        self.bot.message(command.message.chat, cast(str, items[0].content), parsing=ChatService.ParseMode.NONE)
 
     @db_session
     def add_item(self, command: Command):
@@ -77,4 +77,4 @@ class CollectionModule(BaseModule):
             if deleted == 0:
                 return "Couldn't find that item."
             else:
-                return f"Item removed. {len(collection.items)} in /{collection.name}."
+                return f"Item removed. {len(collection.items)} items in /{collection.name}."
