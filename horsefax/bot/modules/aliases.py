@@ -1,21 +1,23 @@
 import copy
+from pony.orm import *
+orm_Optional = Optional
 from typing import Optional
-from peewee import *
 
 from horsefax.telegram.services.command import Command
 
 from ..core import HorseFaxBot, ModuleTools, BaseModule
-from ..db import BaseModel
+from ..db import db
 
 
-class Alias(BaseModel):
-    id = PrimaryKeyField()
-    alias = CharField(index=True, unique=True)
-    command = CharField()
-    added_by = IntegerField(null=True)
+class Alias(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    alias = Required(str, unique=True)
+    command = Required(str)
+    added_by = orm_Optional(int)
 
 
-class PingModule(BaseModule):
+class AliasModule(BaseModule):
+    @db_session
     def __init__(self, bot: HorseFaxBot, util: ModuleTools) -> None:
         self.bot = bot
         self.util = util
@@ -24,6 +26,7 @@ class PingModule(BaseModule):
         for alias in Alias.select():
             self.util.register_command(alias.alias, self.handle_alias)
 
+    @db_session
     def add_alias(self, command: Command) -> Optional[str]:
         if len(command.args) < 2:
             return "Syntax: `/addalias <alias> <command>`"
@@ -36,6 +39,7 @@ class PingModule(BaseModule):
         self.util.register_command(alias, self.handle_alias)
         return f"Added alias /{alias}."
 
+    @db_session
     def handle_alias(self, command: Command) -> Optional[str]:
         alias = Alias.get(alias=command.command)
         if not hasattr(command.message, 'alias_origin'):
@@ -51,13 +55,13 @@ class PingModule(BaseModule):
         self.bot.commands.handle_message(new_message)
         return None
 
+    @db_session
     def remove_alias(self, command: Command) -> str:
         if len(command.args) < 1:
             return "Syntax: `/removealias alias`"
         alias_name = command.args[0]
-        try:
-            alias = Alias.get(alias=alias_name)
-        except DoesNotExist:
+        alias = Alias.get(alias=alias_name)
+        if alias is None:
             return f"Alias `{alias_name}` does not exist."
         alias.delete()
         return f"Deleted `/{alias_name}` (which was an alias for `/{alias.command}`)."
