@@ -38,7 +38,7 @@ class CollectionModule(BaseModule):
         if Collection.get(name=command.args[0]) is not None:
             collection = Collection(name=command.args[0], added_by=command.message.sender.id)
             self.util.register_command(cast(str, collection.name), self.handle_command)
-            return f"Created collection `{collection.name}`."
+            return f"Created collection /{collection.name}."
         else:
             return "That collection already exists."
 
@@ -61,7 +61,7 @@ class CollectionModule(BaseModule):
         if collection is None:
             return "That collection does not exist."
         item = collection.items.create(content=thing, added_by=command.message.sender.id)
-        return f"Added. {len(collection.items)} items in `{collection.name}`."
+        return f"Added. {len(collection.items):,} items in /{collection.name}."
 
     @db_session
     def remove_item(self, command: Command):
@@ -77,4 +77,4 @@ class CollectionModule(BaseModule):
             if deleted == 0:
                 return "Couldn't find that item."
             else:
-                return f"Item removed. {len(collection.items)} items in /{collection.name}."
+                return f"Item removed. {len(collection.items):,} items in /{collection.name}."
