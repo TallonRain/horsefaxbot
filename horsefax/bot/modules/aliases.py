@@ -1,6 +1,6 @@
 import copy
 from pony.orm import *
-orm_Optional = Optional
+from pony import orm
 from typing import Optional
 
 from horsefax.telegram.services.command import Command
@@ -13,7 +13,7 @@ class Alias(db.Entity):
     id = PrimaryKey(int, auto=True)
     alias = Required(str, unique=True)
     command = Required(str)
-    added_by = orm_Optional(int)
+    added_by = orm.Optional(int)
 
 
 class AliasModule(BaseModule):
