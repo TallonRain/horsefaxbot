@@ -21,7 +21,8 @@ elif db_provider == 'mysql':
         'user': db_url.username,
         'passwd': db_url.password,
         'host': db_url.hostname,
-        'port': db_url.port
+        'port': db_url.port,
+        'charset': 'utf8mb4',
     }
 elif db_provider == 'sqlite':
     db_params = {
