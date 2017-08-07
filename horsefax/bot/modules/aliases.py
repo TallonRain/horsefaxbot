@@ -33,7 +33,7 @@ class AliasModule(BaseModule):
         alias = command.args[0]
         alias_to = ' '.join(command.args[1:])
         try:
-            Alias(alias=alias, command=alias_to, added_by=command.message.sender.id).save()
+            Alias(alias=alias, command=alias_to, added_by=command.message.sender.id)
         except IntegrityError:
             return "That alias already exists."
         self.util.register_command(alias, self.handle_alias)
