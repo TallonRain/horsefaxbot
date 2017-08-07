@@ -35,7 +35,7 @@ class CollectionModule(BaseModule):
     def add_collection(self, command: Command):
         if len(command.args) < 1:
             return "You must specify a collection name."
-        if Collection.get(name=command.args[0]) is not None:
+        if Collection.get(name=command.args[0]) is None:
             collection = Collection(name=command.args[0], added_by=command.message.sender.id)
             self.util.register_command(cast(str, collection.name), self.handle_command)
             return f"Created collection /{collection.name}."
