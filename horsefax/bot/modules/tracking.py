@@ -48,7 +48,7 @@ class TelegramMessage(db.Entity):
     reply_to = orm.Optional('TelegramMessage')
     replies = Set('TelegramMessage')
     edit_date = orm.Optional(datetime.datetime)
-    PrimaryKey(id, chat)
+    PrimaryKey(chat, id)
 
 
 class TelegramTextMessage(TelegramMessage):
