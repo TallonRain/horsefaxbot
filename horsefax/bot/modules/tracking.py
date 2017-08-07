@@ -31,7 +31,7 @@ class TelegramUser(db.Entity):
 
 class TelegramChat(db.Entity):
     id = PrimaryKey(int, size=64)
-    type = Required(Chat.Type)
+    type = Required(Chat.Type, index=True)
     title = orm.Optional(str, nullable=True)
     all_members_are_administrators = Required(bool)
     users = Set(TelegramUser)
@@ -40,14 +40,15 @@ class TelegramChat(db.Entity):
 
 
 class TelegramMessage(db.Entity):
-    id = PrimaryKey(int)
+    id = Required(int)
+    chat = Required(TelegramChat)
     sender = Required(TelegramUser, reverse="sent_messages")
     date = Required(datetime.datetime, index=True)
-    chat = orm.Optional(TelegramChat)
     forward_from = orm.Optional(TelegramUser, reverse="forwarded_messages")
     reply_to = orm.Optional('TelegramMessage')
     replies = Set('TelegramMessage')
     edit_date = orm.Optional(datetime.datetime)
+    PrimaryKey(id, chat)
 
 
 class TelegramTextMessage(TelegramMessage):
@@ -117,9 +118,8 @@ class TrackingModule(BaseModule):
                     self.update_user(entity.user)
 
         # Track chats
-        if message.chat.type != Chat.Type.PRIVATE:
-            self.update_chat(message.chat)
-            TelegramChat[message.chat.id].users.add(TelegramUser[origin.id])
+        self.update_chat(message.chat)
+        TelegramChat[message.chat.id].users.add(TelegramUser[origin.id])
 
         if isinstance(message, UsersJoinedMessage):
             for user in message.users:
@@ -143,7 +143,7 @@ class TrackingModule(BaseModule):
         log_params = {'id': message.message_id,
                       'sender': TelegramUser[message.sender.id],
                       'date': message.date,
-                      'chat': TelegramChat[message.chat.id] if message.chat.type != Chat.Type.PRIVATE else None,
+                      'chat': TelegramChat[message.chat.id],
                       'forward_from': TelegramUser[message.forward_from.id] if message.forward_from else None,
                       'reply_to': TelegramMessage.get(id=message.reply_to_message.message_id) if message.reply_to_message is not None else None,
                       'edit_date': message.edit_date}
