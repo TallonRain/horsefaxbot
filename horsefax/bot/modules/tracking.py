@@ -6,7 +6,7 @@ from typing import Optional
 from ..core import HorseFaxBot, ModuleTools, BaseModule
 from ..db import db
 from horsefax.telegram.types import (Message, User, Chat, UsersJoinedMessage, UserLeftMessage, ChatMigrateFromIDMessage,
-                                     MessagePinnedMessage)
+                                     MessagePinnedMessage, TextMessage)
 
 
 class TelegramUser(db.Entity):
@@ -49,6 +49,11 @@ class TrackingModule(BaseModule):
             self.update_user(message.forward_from)
         if message.reply_to_message:
             self.handle_message(message.reply_to_message)
+
+        if isinstance(message, TextMessage):
+            for entity in message.entities:
+                if entity.user is not None:
+                    self.update_user(entity.user)
 
         # Track chats
         if message.chat.type != Chat.Type.PRIVATE:
