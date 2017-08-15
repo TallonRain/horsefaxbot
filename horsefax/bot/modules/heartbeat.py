@@ -2,11 +2,11 @@ from ..core import HorseFaxBot, ModuleTools, BaseModule
 from horsefax.telegram.services.command import Command
 
 
-class PingModule(BaseModule):
+class HeartbeatModule(BaseModule):
     def __init__(self, bot: HorseFaxBot, util: ModuleTools) -> None:
         self.bot = bot
         self.util = util
-        self.util.register_command('ping', self.ping)
+        self.util.register_command('heartbeat', self.thump)
 
-    def ping(self, command: Command):
-        return "`Pong!`"
+    def thump(self, command: Command) -> str:
+        return "Thump."

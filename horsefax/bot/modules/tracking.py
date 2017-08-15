@@ -21,6 +21,9 @@ class TelegramUser(db.Entity):
     sent_messages = Set('TelegramMessage', reverse="sender")
     forwarded_messages = Set('TelegramMessage', reverse="forward_from")
 
+    # for groups module
+    ping_groups = Set('PingGroup')
+
     def to_user(self):
         return User({'id': self.id,
                      'username': self.username,

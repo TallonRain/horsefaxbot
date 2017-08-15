@@ -1,4 +1,5 @@
 from os import environ as _env
+import os.path
 import urllib.parse
 
 token = _env['TELEGRAM_TOKEN']
@@ -26,6 +27,6 @@ elif db_provider == 'mysql':
     }
 elif db_provider == 'sqlite':
     db_params = {
-        'filename': db_url.hostname,
+        'filename': os.path.join(db_url.hostname or "", db_url.path),
         'create_db': True
     }
