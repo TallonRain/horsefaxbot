@@ -97,4 +97,5 @@ class CollectionModule(BaseModule):
 
     @db_session
     def list_groups(self, command: Command) -> str:
-        return f"The following groups exist: {', '.join(f'`{x.name}`' for x in PingGroup.select().order_by(PingGroup.name))}"
+        return f"The following groups exist: " \
+               f"{', '.join(f'`{x.name}`' for x in PingGroup.select().order_by(PingGroup.name))}"
