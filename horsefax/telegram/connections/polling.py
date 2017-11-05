@@ -33,12 +33,9 @@ class LongPollingConnection(TelegramConnection):
                 time.sleep(10)
                 continue
             if not updates:
-                print(f"Got no updates: {updates}")
                 continue
-            print(f"Beginning batch of {len(updates)} updates.")
             updates = sorted(updates, key=lambda x: x['update_id'])
             for update in updates:
-                print(f"Processing update #{update['update_id']}.")
                 # doing this per message ensures that we don't drop messages if we crash out.
                 self.latest_update = update['update_id']
                 try:
