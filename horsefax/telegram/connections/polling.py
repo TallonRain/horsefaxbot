@@ -41,5 +41,5 @@ class LongPollingConnection(TelegramConnection):
                 try:
                     self.handler(update)
                 except Exception as e:
-                    print("Something went terribly wrong.")
+                    print(f"Something went terribly wrong processing update {update['update_id']}:")
                     traceback.print_exc()
