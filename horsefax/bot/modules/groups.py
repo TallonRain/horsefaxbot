@@ -25,6 +25,7 @@ class CollectionModule(BaseModule):
         self.util.register_command("leavegroup", self.leave_group)
         self.util.register_command("removegroup", self.remove_group)
         self.util.register_command("listgroups", self.list_groups)
+        self.util.register_command("showgroup", self.show_group)
         self.util.register_command("ping", self.ping_group)
 
     @db_session
@@ -99,3 +100,17 @@ class CollectionModule(BaseModule):
     def list_groups(self, command: Command) -> str:
         return f"The following groups exist: " \
                f"{', '.join(f'`{x.name}`' for x in PingGroup.select().order_by(PingGroup.name))}"
+
+    @db_session
+    def show_group(self, command: Command) -> str:
+        if len(command.args) != 1:
+            return "Syntax: `/showgroup <group name>`"
+        name = command.args[0].lower()
+        group = PingGroup.get(name=name)
+        if group is None:
+            return f"The group `{group_name}` does not exist."
+
+        if len(group.members) == 0:
+            return f"The group `{group.name}` has np members."
+
+        return f"`{name}`: {', '.join(x for x in group.members.username if x)}"
