@@ -28,10 +28,12 @@ class LongPollingConnection(TelegramConnection):
         while self.connected:
             try:
                 updates = self.request("getUpdates", json={"offset": self.latest_update + 1, "timeout": 60}, timeout=70)
-            except requests.RequestException:
+            except requests.RequestException as e:
+                print(e)
                 time.sleep(10)
                 continue
             if not updates:
+                print(f"Got no updates: {updates}")
                 continue
             print(f"Beginning batch of {len(updates)} updates.")
             updates = sorted(updates, key=lambda x: x['update_id'])
