@@ -68,7 +68,7 @@ class CollectionModule(BaseModule):
         if len(group.members) == 0:
             return f"The group `{group.name}` has no members."
         output = f"{' '.join(f'@{x}' for x in group.members.username if x)}: {message}"
-        self.bot.message(command.message.chat, output, parsing=ChatService.ParseMode.NONE)
+        self.bot.message(command.message.chat, output, parsing=ChatService.ParseMode.NONE, preview=False)
 
     @db_session
     def leave_group(self, command: Command) -> str:
