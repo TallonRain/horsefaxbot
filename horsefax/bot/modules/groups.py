@@ -57,8 +57,8 @@ class CollectionModule(BaseModule):
 
     @db_session
     def ping_group(self, command: Command) -> Optional[str]:
-        if len(command.args) < 2:
-            return "Syntax: `/ping <group name> <message>`"
+        if len(command.args) < 1:
+            return "Syntax: `/ping <group name> [message]`"
         message = ' '.join(command.args[1:])
         group_name = command.args[0].lower()
         group = PingGroup.get(name=group_name)
@@ -66,7 +66,7 @@ class CollectionModule(BaseModule):
             return f"The group `{group_name}` does not exist."
 
         if len(group.members) == 0:
-            return f"The group `{group.name}` has np members."
+            return f"The group `{group.name}` has no members."
         output = f"{' '.join(f'@{x}' for x in group.members.username if x)}: {message}"
         self.bot.message(command.message.chat, output, parsing=ChatService.ParseMode.NONE)
 
