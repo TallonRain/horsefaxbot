@@ -10,7 +10,9 @@ class RollModule(BaseModule):
         self.util = util
         self.util.register_command('roll', self.roll)
 
-    def roll(self, command: Command):
+    def roll(self, command: Command) -> str:
+        if len(command.args) == 0:
+            return str(random.randrange(1, 7))
         text = command.args[0]
         data = text.split('d')
         result = 0
